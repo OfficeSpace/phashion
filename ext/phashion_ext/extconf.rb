@@ -20,6 +20,10 @@ Dir.chdir(HERE) do
     puts(cmd = "tar xzf #{BUNDLE} 2>&1")
     raise "'#{cmd}' failed" unless system(cmd)
 
+    puts "updating config.{guess,sub} to support newer architectures"
+    FileUtils.mv File.join('config.sub'  ), BUNDLE_PATH, force: true
+    FileUtils.mv File.join('config.guess'), BUNDLE_PATH, force: true
+    
     Dir.chdir(BUNDLE_PATH) do
       puts(cmd = "env CXXFLAGS='#{$CXXFLAGS}' CFLAGS='#{$CFLAGS}' LDFLAGS='#{$LDFLAGS}' ./configure --prefix=#{HERE} --disable-audio-hash --disable-video-hash --disable-shared --with-pic 2>&1")
       raise "'#{cmd}' failed" unless system(cmd)
